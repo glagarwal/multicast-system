@@ -66,7 +66,7 @@ public ParticipantInstance(Socket portSocket, long thresholdTime){
 																this.thresholdTime = thresholdTime;
 
 								}catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 public ParticipantInstance(DataOutputStream dos_message, int participatorId, long thresholdTime){
@@ -76,7 +76,7 @@ public ParticipantInstance(DataOutputStream dos_message, int participatorId, lon
 																this.participatorId = participatorId;
 																this.thresholdTime = thresholdTime;
 								}catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 
@@ -93,7 +93,7 @@ public void register(int participatorId, String IpAddress, int messagePortNumber
 																this.dos_message = new DataOutputStream(this.messageSocket.getOutputStream());
 																new ParticipantInstance().addParticipant(participatorId, true);
 								} catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 
@@ -105,7 +105,7 @@ public void deregister(int participatorId){
 																tempPersistantPartiMap.remove(participatorId);
 								}
 								catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 
@@ -150,7 +150,7 @@ public void multicastSend(String message){
 																								}
 																}
 								}catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 
@@ -162,7 +162,7 @@ public void reconnect(int participatorId, String IpAddress, int messagePortNumbe
 																this.dos_message = new DataOutputStream(this.messageSocket.getOutputStream());
 																new ParticipantInstance().modifyParticipant(participatorId, true);
 								}catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 
@@ -205,7 +205,8 @@ public void run(){
 																																																																this.dos_message.writeUTF(tempMessageMap.get(cal));
 																																																								}
 																																																}
-																																																tempPersistantPartiMap.remove(this.participatorId);
+																							
+																																		tempPersistantPartiMap.remove(this.participatorId);
 																																								}
 																																								new ParticipantInstance().setPersistantPartiMap(tempPersistantPartiMap);
 																																}
@@ -228,7 +229,7 @@ public void run(){
 																																								messageThread.start();
 																																}
 																																else if(command != null && command.contains("msend")) {
-																																								multicastSend(command.split(" ")[1]);
+																																								multicastSend(command.substring(6));
 																																}
 																																else if(command != null && command.contains("disconnect")) {
 																																								disconnect(this.participatorId);
@@ -254,7 +255,7 @@ public void run(){
 																}
 								}
 								catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 }
@@ -285,14 +286,14 @@ public void run() {
 																																portParticipantSocket = this.portServer.accept();
 																								} catch(Exception e) {
 																																System.out.println("Error Connecting to the server");
-																																e.printStackTrace();
+																																//e.printStackTrace();
 																								}
 																								System.out.println("Participant connected port"+portParticipantSocket);
 																								ParticipantInstance participant = new ParticipantInstance(portParticipantSocket, thresholdTime);
 																								participant.start();
 																}
 								}catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 //------------------main method-------------------
