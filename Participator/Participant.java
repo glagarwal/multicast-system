@@ -17,7 +17,7 @@ private int participantId;
 private String logFilePath;
 private String coordinatorIp;
 private int coordinatorPort;
-private static boolean disconnectFlag;
+private static boolean disconnectFlag = true;
 
 public Participant(int participantId, String logFilePath, String coordinatorIp, int coordinatorPort){
 								try{
@@ -28,7 +28,7 @@ public Participant(int participantId, String logFilePath, String coordinatorIp, 
 																dis = new DataInputStream(socket.getInputStream());
 																dos = new DataOutputStream(socket.getOutputStream());
 								} catch (Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 //----------------------Constructor to instantiate myftp child thread (Created to make client multi-threaded)-----------
@@ -37,7 +37,7 @@ public Participant(int myPort, String logFilePath) {
 																this.messageServerSocket = new ServerSocket(myPort);
 																this.logFilePath = logFilePath;
 								} catch (Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 public Participant(){
@@ -50,7 +50,7 @@ public static String getMyIpAddress(){
 																String temp = String.valueOf(ip);
 																return temp.split("/")[1];
 								}catch(Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 								return null;
 }
@@ -58,9 +58,9 @@ public static String getMyIpAddress(){
 public void run() {
 								try {
 																boolean temp = true;
-																System.out.println("Thread started");
+																//System.out.println("Thread started");
 																this.messageSocket = this.messageServerSocket.accept();
-																System.out.println("Connection made");
+																//System.out.println("Connection made");
 																this.dis_message = new DataInputStream(messageSocket.getInputStream());
 																this.dos_message = new DataOutputStream(messageSocket.getOutputStream());
 																if(!new File(this.logFilePath).exists()) {
@@ -68,7 +68,7 @@ public void run() {
 																								tempWriter.close();
 																}
 																while(temp) {
-																								if(this.disconnectFlag) {
+																								if(disconnectFlag) {
 																																temp = false;
 																								}else{
 																																List<String> messages = new ArrayList<String>();
@@ -76,7 +76,7 @@ public void run() {
 																																File file = new File(this.logFilePath);
 																																Scanner scanner = new Scanner(file);
 																																String message = this.dis_message.readUTF();
-																																System.out.println("Message is "+message+" and log file path is "+this.logFilePath);
+																																//System.out.println("Message is "+message+" and log file path is "+this.logFilePath);
 
 																																while(scanner.hasNext()) {
 																																								messages.add(scanner.nextLine());
@@ -90,7 +90,7 @@ public void run() {
 																								}
 																}
 								} catch (Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 								}
 }
 public static void main(String args[]) {
@@ -100,19 +100,19 @@ public static void main(String args[]) {
 																int participantId = Integer.parseInt(scanner.nextLine());
 																String logFilePath = scanner.nextLine();
 																String thirdLine = scanner.nextLine();
-																String coordinatorIp = thirdLine.split(":")[0];
-																int coordinatorPort = Integer.parseInt(thirdLine.split(":")[1]);
+																String coordinatorIp = thirdLine.split(" ")[0];
+																int coordinatorPort = Integer.parseInt(thirdLine.split(" ")[1]);
 
 																socket = new Socket(coordinatorIp, coordinatorPort);
 																Participant participant = new Participant(participantId, logFilePath, coordinatorIp, coordinatorPort);
 																String command = "Chat started!";
 
 																while (true) {
-																								System.out.println("In Main while loop"+ new Participant().getMyIpAddress());
+																								System.out.print("Participant> ");
 																								command = sc.nextLine();
 
 																								if (command.split(" ")[0].equalsIgnoreCase("register")) {
-																																System.out.println("In register");
+																																//System.out.println("In register");
 																																disconnectFlag = false;
 																																//String myIp = command.split(" ")[1];
 																																String myIp = new Participant().getMyIpAddress();
@@ -125,10 +125,10 @@ public static void main(String args[]) {
 
 																																} while(!ret.equalsIgnoreCase("connection made"));
 																								}
-																								else if(command.contains("msend")) {
+																								else if(command.contains("msend") && disconnectFlag == false) {
 																																dos.writeUTF(command);
 																								}
-																								else if(command.contains("disconnect")) {
+																								else if(command.contains("disconnect") && disconnectFlag == false) {
 																																dos.writeUTF(command);
 																																String res = dis.readUTF();
 																																if(res.equalsIgnoreCase("ok")) {
@@ -136,7 +136,7 @@ public static void main(String args[]) {
 																																}
 
 																								}
-																								else if(command.equalsIgnoreCase("deregister")) {
+																								else if(command.equalsIgnoreCase("deregister") && disconnectFlag == false) {
 																																dos.writeUTF(command);
 																																String res = dis.readUTF();
 																																if(res.equalsIgnoreCase("ok")) {
@@ -160,7 +160,7 @@ public static void main(String args[]) {
 																								}
 																}
 								} catch (Exception e) {
-																e.printStackTrace();
+																//e.printStackTrace();
 																System.out.println(UNEXPECTED_ERROR + ": " + e);
 								}
 }
